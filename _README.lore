@@ -15,9 +15,9 @@ You will need GNU Make and GCC to build the toolchain, but I would be surprised 
 If you find we did not properly use the POSIX interface or used a GCC-specific feature, that's a bug.
 If we used a feature that doesn't work with LLVM, that's not yet a bug but probably will be in the future.
 
-To build the toolchain, cd into the src directory and type ``make``.
-To test the tools, cd into the test directory and type ``make``.
-To build the documentation, cd into the docs directory and type ``make``.
+To build the toolchain, cd into the src directory and type **make**.
+To test the tools, cd into the test directory and type **make**.
+To build the documentation, cd into the docs directory and type **make**.
 Assuming the documentation has been built and pushed to the master branch on Github, you should be able to point your browser at @@ https://mercerism.github.io/lore/ the Lore project page @@ and browse the docs.
 
 If you are completely unfamiliar with Lore, I suggest reading the @@ https://mercerism.github.io/lore/00_introduction.html Introduction to Lore @@ page.
