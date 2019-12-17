@@ -1,21 +1,61 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>test</title>
+    <title>The Lore Project</title>
+    <style type="text/css">
+      @import url('https://fonts.googleapis.com/css?family=GFS+Didot&display=swap');
+
+      body {
+        font-family: Palatino,Palatino Linotype,Palatino LT STD, 'GFS Didot', serif;
+               margin-left: auto;
+       margin-right: auto;
+       width: 40em;
+
+      }
+
+     
+      pre, pre + code {
+        margin-left: 2em;
+        padding: 4px;
+        border-left: 6px solid #E7E7E7;
+      }
+
+      pre {
+        background-color: #F7F7F7;
+        margin-bottom: 0px;
+      }
+
+      pre + code {
+        background-color: #F7F7F7;
+      }
+    </style>
   </head>
   <body>
-    <h1>test</h1>
 
-    <p>Hmm... Github Pages used to be a thing where you put HTML files in
-    a different branch and pushed it to the GitHub remote. Now it looks like it
-    just publishes the /docs directory. But there's all this stuff about Jeckyll
-      and templates. I'm not sure I understand what's going on.</p>
+    <h1>The Lore Project</h1>
 
-    <p>And it doesn't seem to work. The docs say I can push HTML files to /docs
-      master and it should publish them. Maybe I have to wait 'til midnight or
-      something?</p>
+    <p>A lightweight markup language designed to support templating
+    and literate programming experiments</p>
 
-    <p>Anyway... this is a test file.</p>
+    <p><b>Lore</b> is a project that was started when the authors
+    attempted to add templating and literate programming features to
+    MarkDown and Textile. While the authors <i>love</i> both of these
+    systems, the syntax and popular implementations were not as
+    extensible as we had hoped.</p>
+
+    <p>AsciiDoc and AsciiDoctor were also considered, but their focus on
+    being faithful reproductions of the DocBook schema introduced other
+    problems. This is not to say AsciiDoc and AsciiDoctor are bad. We love
+    them.</p>
+
+    <p>We wanted a simpler system that could do 80% of what MarkDown,
+    Textile and AsciiDoctor could do, but with a slightly simpler
+    syntax and a clear separation of syntax and processing
+    expectations. Our core objective was to produce an expressive
+    syntax that was easy to parse.</p>
+
+    <p>If you are new to <b>Lore</b>, consider reading
+    <a href="./00_introduction.html">An Introduction to Lore</a>.</p>
 
   </body>
 </html>

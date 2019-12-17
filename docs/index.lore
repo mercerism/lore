@@ -1,0 +1,26 @@
+::title
+The Lore Project
+
+::subtitle
+A lightweight markup language designed to support templating and
+literate programming experiments
+
+!!Lore!! is a project that was started when the authors attempted
+to add templating and literate programming features to MarkDown
+and Textile. While the authors //love// both of these systems, the
+syntax and popular implementations were not as extensible as we
+had hoped.
+
+AsciiDoc and AsciiDoctor were also considered, but their focus on
+being faithful reproductions of the DocBook schema introduced other
+problems. This is not to say AsciiDoc and AsciiDoctor are bad. We
+love them.
+
+We wanted a simpler system that could do 80% of what MarkDown,
+Textile and AsciiDoctor could do, but with a slightly simpler
+syntax and a clear separation of syntax and processing
+expectations. Our core objective was to produce an expressive
+syntax that was easy to parse.
+
+If you are new to !!Lore!!, consider reading
+@@ ./00_introduction.html An Introduction to Lore @@.
