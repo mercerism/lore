@@ -21,8 +21,7 @@ test the tools, cd into the test directory and type make. To build the
 documentation, cd into the docs directory and type make. Assuming the
 documentation has been built and pushed to the master branch on
 Github, you should be able to point your browser at the Lore project
-page at https://mercerism.github.io/lore/00_introduction.htm and browse
-the docs.
+page at https://mercerism.github.io/lore/ and browse the docs.
 
 If you are completely unfamiliar with Lore, I suggest reading the An
 Introduction to Lore page at
