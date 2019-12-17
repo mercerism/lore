@@ -1,0 +1,32 @@
+Lore
+
+A lightweight markup language designed to support templating and
+literate programming experiments
+
+This is the primary repository for the Lore project. You should find
+documents and code here; look in the docs directory for documents and
+the src directory for lore toolchain code. Automated tests are in the
+test directory.
+
+The Lore toolchain is not complicated enough to require the use of
+Autoconf; we tried to target POSIX and hoped for the best. You will
+need GNU Make and GCC to build the toolchain, but I would be surprised
+if LLVM didn't work. If you find we did not properly use the POSIX
+interface or used a GCC-specific feature, that's a bug. If we used a
+feature that doesn't work with LLVM, that's not yet a bug but probably
+will be in the future.
+
+To build the toolchain, cd into the src directory and type make. To
+test the tools, cd into the test directory and type make. To build the
+documentation, cd into the docs directory and type make. Assuming the
+documentation has been built and pushed to the master branch on
+Github, you should be able to point your browser at the Lore project
+page at https://mercerism.github.io/lore/00_introduction.htm and browse
+the docs.
+
+If you are completely unfamiliar with Lore, I suggest reading the An
+Introduction to Lore page at
+https://mercerism.github.io/lore/00_introduction.html .
+
+All contents of this package are copyright Wilber Mercer and Meadhbh
+Hamrick but are released under the license in the LICENCE file.
