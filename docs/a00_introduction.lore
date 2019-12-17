@@ -1,0 +1,117 @@
+::title
+An Introduction to Lore
+
+!!Lore!! is a new MarkDown-like markup syntax and toolchain I've been working on with a few people.
+We were dissatisfied with other solutions and decided to make another one.
+These files are intended to teach you about lore by example and to explain its design rationale.
+If you are viewing these files as HTML or PDF documents, you may want to view the "Lore source" that was used to produce them.
+The examples in the text are small and focus on demonstrating a single aspect of the !!Lore Syntax!!, but the source for this document will show you how a complete document was constructed using !!Lore!!.
+You can find it at ::link:remote:https://www.example.com/change_me_to_something_real.lore .
+
+::section
+The Very Basics
+
+!!Lore!! is a markup syntax, a toolchain and a set of assumptions about documents.
+The syntax is probably the easiest part of Lore to understand, so let's talk about that first.
+The !!Lore Toolchain!! includes command-line utilities that convert files formatted using the !!Lore Syntax!! into HTML, PDF or DocBook/XML files.
+As an example, you would use the **lore2html** utility to convert the following fragment into HTML:
+
+;;--- 64 Columns is THIS much ------------------------------------
+::caption:01_simple_example.lore
+  This is a simple example of a //Lore file//.  It contains a few
+  sentences in a few paragraphs.  We hope you find the markup is
+  __intuitive__ and does not distract from typing content.
+  
+  Paragraphs are just collections of characters, separated by two
+  "end of lines" -- that's a single Line-Feed on Unix-like systems
+  or a Carriage-Return / Line-Feed sequence on DOS / Windows-like
+  systems.
+  
+  Virtually all markup in !!Lore!! is accomplished with digraphs :
+  two character sequences. This is so you can type regular
+  sentences without worrying if you're going to accidentally
+  trigger the formatter.
+
+To convert this to HTML, you would use the following command (assuming the name of this file is **01_simple_example.lore**.)
+
+  lore2html 01_simple_example.lore > 01_simple_example.html
+
+And you should get the following HTML out:
+
+;;--- 64 Columns is THIS much ------------------------------------
+::caption:01_simple_example.html
+  <!DOCTYPE html>
+  <html>
+    <body>
+      <p>This is a simple example of a <i>Lore file</i>.  It
+      contains a few sentences in a few paragraphs.  We hope you
+      find the markup is <u>intuitive</u> and does not distract
+      from typing content.</p>
+      
+      <p>Paragraphs are just collections of characters, separated
+      by two "end of lines" &#8211; that's a single Line-Feed on
+      Unix-like systems or a Carriage-Return / Line-Feed sequence
+      on DOS / Windows-like systems.</p>
+      
+      <p>Virtually all markup in <b>Lore</b> is accomplished with
+      digraphs : two character sequences. This is so you can type
+      regular sentences without worrying if you're going to
+      accidentally trigger the formatter.</p>
+    </body>
+  </html>
+
+The actual output of the **lore2html** command may be slightly different.
+In this example we indented the HTML elements and made the columns narrow to make it a little more readable.
+But that's a simple example of using Lore from the command line.
+
+::section
+::level:1
+Design Rationale
+
+First, !!why do we need a new markup language?!!
+Why not use @@ https://en.wikipedia.org/wiki/Markdown Markdown @@ or @@ https://en.wikipedia.org/wiki/Textile_(markup_language) Textile @@?
+Or any of the many, many other @@ https://en.wikipedia.org/wiki/Lightweight_markup_language lightweight markup languages @@?
+
+We were working on a project and tried both MarkDown and Textile, but both "got in our way" for a particular task we were trying to accomplish.
+We were building tools to experiment with @@ http://www.literateprogramming.com/index.html Literate Programming @@ and discovered we too frequently triggered the MarkDown and Textile formatters.
+After a brief attempt to add literate programming and templating support to MarkDown and Textile, we quickly determined it would be easier to start from scratch.
+The !!Lore!! syntax was designed to explicitly support annotating blocks of text with arbitrary metadata and templating using @@ http://mustache.github.io/ Mustache @@ and @@ https://handlebarsjs.com/ Handlebars @@.
+We then realized creating a new syntax and a new toolchain would give us the opportunity to develop new tools using the very literate programming techniques we wished to investigate.
+
+Okay, !!Is Lore a Research Project?!!
+Well, yes and no.
+We want to add features to tools to support new experiments, but several of us use Lore on a daily basis for routine tasks.
+It's very likely the toolchain will add experimental features that are triggered via metadata annotations.
+But the fundamental syntax is stable and support for basic, non-experimental features will not change.
+We are also fans of reverse compatibility; changes in the Lore syntax that break existing, non-experimental functionality won't be added to Lore.
+
+Next, !!why use digraphs for markup?!!
+Mostly because people usually do not use them when typing English sentences.
+We did not want to have to worry about accidentally triggering the formatter.
+
+!!Why did you pick the specfic digraphs you did?!!
+The in-line formatting digraphs for bold, underline, italic and monospaced all have meaning.
+The bold digraph is two exclamation points (\!!); we figured bolded text indicated something "exciting."
+What punctuation mark is more exciting that the exclamation point?
+The italic digraph is two slashes (\//); the slanted nature of the slashes are supposed to remind the user of the slanted, oblique nature of italic print.
+The underscore digraph is two underbars (\__) which hopefully remind the user of the underline that will go under the text.
+And the double asterisk digraph (\**) for inline monospaced type is to remind C-programmers of a pointer.
+We use in-line monospace fonts for small code examples; it was obvious to us.
+
+The Lore syntax was intended to be easy for humans to consume.
+When there was a difference between "easy for writers" or "easy for programmers," we opted for "easy for writers."
+But we believe the syntax is not //too// difficult for programmers to reason about.
+
+::section
+::level:1
+Review
+
+## !!Lore!! is a lightweight markup language for annotating simple text documents with arbitrary metadata and formatting markup.
+## It was invented to support experiments in literate programming, but is useful in the same contexts that other lightweight markup languages are.
+## The //Lore Toolchain// converts plain text files formatted using the //Lore Syntax// into HTML, @@ https://en.wikipedia.org/wiki/XSL_Formatting_Objects XSL Formatting Objects @@ or @@ https://en.wikipedia.org/wiki/DocBook DocBook/XML @@ files.
+   Other tools like @@ https://www.princexml.com/ PrinceXML @@, @@ https://weasyprint.org/ WeasyPrint @@ or @@ https://xmlgraphics.apache.org/fop/ Apache FOP @@ can convert HTML or FO files into PDFs.
+## A Lore file is an ordered collection of //blocks//.
+   Blocks are separated by two End-of-Line sequences (LF or CRLF.)
+## Text decoration markup (bold, underline, monospace and italic) is triggered by enclosing text in digraphs:
+   (\!!) for bold, (\//) for italic / oblique, (\__) for underline and (\**) for monospace.
+

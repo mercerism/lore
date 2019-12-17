@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>An Introduction to Lore</title>
+    <style type="text/css">
+      @import url('https://fonts.googleapis.com/css?family=GFS+Didot&display=swap');
+
+      body {
+        font-family: Palatino,Palatino Linotype,Palatino LT STD, 'GFS Didot', serif;
+               margin-left: auto;
+       margin-right: auto;
+       width: 40em;
+
+      }
+
+     
+      pre, pre + code {
+        margin-left: 2em;
+        padding: 4px;
+        border-left: 6px solid #E7E7E7;
+      }
+
+      pre {
+        background-color: #F7F7F7;
+        margin-bottom: 0px;
+      }
+
+      pre + code {
+        background-color: #F7F7F7;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>An Introduction to Lore</h1>
+    
+    <p><b>Lore</b> is a new MarkDown-like markup syntax and toolchain I've been
+    working on with a few people.  We were dissatisfied with other solutions and
+    decided to make another one.  These files are intended to teach you about
+    lore by example and to explain its design rationale.  If you are viewing
+    these files as HTML or PDF documents, you may want to view the "Lore source"
+    that was used to produce them.  The examples in the text are small and focus
+    on demonstrating a single aspect of the <b>Lore Syntax</b>, but the source
+    for this document will show you how a complete document was constructed
+    using Lore.  You can find it at <a href="https://gist.github.com/mercerism/220f7a435de0fd106a4815b9750454c0">https://gist.github.com/mercerism/220f7a435de0fd106a4815b9750454c0</a>
+    .</p>
+    <h2>1. The Very Basics</h2>
+
+    <p><b>Lore</b> is a markup syntax, a toolchain and a set of assumptions
+    about documents.  The syntax is probably the easiest part of Lore to
+    understand, so let's talk about that first.  The <b>Lore Toolchain</b>
+    includes command-line utilities that convert files formatted using the
+    <b>Lore Syntax</b> into HTML, PDF or DocBook/XML files.  As an example, you
+    would use the <code>lore2html</code> utility to convert the following
+    fragment into HTML:</p>
+
+    <pre>This is a simple example of a //Lore file//. It contains a few
+sentences in a few paragraphs.  We hope you find the markup is
+__intuitive__ and does not distract from typing content.
+  
+Paragraphs are just collections of characters, separated by two
+"end of lines" -- that's a single Line-Feed on Unix-like systems
+or a Carriage-Return / Line-Feed sequence on DOS / Windows-like
+systems.
+  
+Virtually all markup in !!Lore!! is accomplished with digraphs :
+two character sequences. This is so you can type regular
+sentences without worrying if you're going to accidentally
+trigger the formatter.</pre>
+
+    <code><b>01_simple_example.lore</b></code>
+  
+    <p>To convert this to HTML, you would use the following command (assuming
+    the name of this file is <code>01_simple_example.lore</code>.)</p>
+
+    <pre>lore2html 01_simple_example.lore > 01_simple_example.html</pre>
+
+    <p>And you should get the following HTML out:</p>
+
+    <pre>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;body&gt;
+    &lt;p&gt;This is a simple example of a &lt;i&gt;Lore file&lt;/i&gt;.  It
+    contains a few sentences in a few paragraphs.  We hope you
+    find the markup is &lt;u&gt;intuitive&lt;/u&gt; and does not distract
+    from typing content.&lt;/p&gt;
+
+    &lt;p&gt;Paragraphs are just collections of characters, separated
+    by two "end of lines" &amp;#8211; that's a single Line-Feed on
+    Unix-like systems or a Carriage-Return / Line-Feed sequence
+    on DOS / Windows-like systems.&lt;/p&gt;
+
+    &lt;p&gt;Virtually all markup in &lt;b&gt;Lore&lt;/b&gt; is accomplished with
+    digraphs : two character sequences. This is so you can type
+    regular sentences without worrying if you're going to
+    accidentally trigger the formatter.&lt;/p&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</pre>
+    
+    <code><b>01_simple_example.html</b></code>
+
+    <p>The actual output of the <code>lore2html</code> command may be slightly
+    different.  In this example we indented the HTML elements and made the
+    columns narrow to make it a little more readable.  But that's a simple
+    example of using Lore from the command line.</p>
+
+    <h3>Design Rationale</h3>
+
+    <p>First, <b>why do we need a new markup language?</b> Why not use <a
+    href="https://en.wikipedia.org/wiki/Markdown">Markdown</a> or <a
+    href="https://en.wikipedia.org/wiki/Textile_(markup_language)">Textile</a>?
+    Or any of the many, many other <a
+    href="https://en.wikipedia.org/wiki/Lightweight_markup_language">
+    lightweight markup languages</a>?</p>
+
+    <p>We were working on a project and tried both MarkDown and Textile, but
+    both "got in our way" for a particular task we were trying to accomplish.
+    We were building tools to experiment with <a
+    href="http://www.literateprogramming.com/index.html">Literate
+    Programming</a> and discovered we too frequently triggered the MarkDown and
+    Textile formatters.  After a brief attempt to add literate programming and
+    templating support to MarkDown and Textile, we quickly determined it would
+    be easier to start from scratch.  The <b>Lore</b> syntax was designed to
+    explicitly support annotating blocks of text with arbitrary metadata and
+    templating using <a href="http://mustache.github.io/">Mustache</a> and <a
+    href="https://handlebarsjs.com/">Handlebars</a>.  We then realized creating
+    a new syntax and a new toolchain would give us the opportunity to develop
+    new tools using the very literate programming techniques we wished to
+    investigate.</p>
+
+    <p>Okay, <b>Is Lore a Research Project?</b> Well, yes and no. We want to add
+    features to tools to support new experiments, but several of us use Lore on
+    a daily basis for routine tasks. It's very likely the toolchain will add
+    experimental features that are triggered via metadata annotations. But the
+    fundamental syntax is stable and support for basic, non-experimental
+    features will not change. We are also fans of reverse compatibility; changes
+    in the Lore syntax that break existing, non-experimental functionality won't
+    be added to Lore.</p>
+
+    <p>Next, <b>why use digraphs for markup?</b> Mostly because people usually
+    do not use them when typing English sentences.  We did not want to have to
+    worry about accidentally triggering the formatter.</p>
+
+    <p><b>Why did you pick the specfic digraphs you did?</b> The in-line
+    formatting digraphs for bold, underline, italic and monospaced all have
+    meaning.  The bold digraph is two exclamation points (!!); we figured bolded
+    text indicated something "exciting."  What punctuation mark is more exciting
+    that the exclamation point?  The italic digraph is two slashes (//); the
+    slanted nature of the slashes are supposed to remind the user of the
+    slanted, oblique nature of italic print.  The underscore digraph is two
+    underbars (__) which hopefully remind the user of the underline that will
+    go under the text.  And the double asterisk digraph (**) for inline
+    monospaced type is to remind C-programmers of a pointer.  We use in-line
+    monospace fonts for small code examples; it was obvious to us.</p>
+
+    <p>The Lore syntax was intended to be easy for humans to consume.  When
+    there was a difference between "easy for writers" or "easy for programmers,"
+    we opted for "easy for writers."  But we believe the syntax is not
+    <i>too</i> difficult for programmers to reason about.</p>
+
+    <h3>Review</h3>
+
+    <ol>
+      
+      <li><b>Lore</b> is a lightweight markup language for annotating simple
+      text documents with arbitrary metadata and formatting markup.</li>
+      
+      <li>It was invented to support experiments in literate programming, but is
+      useful in the same contexts that other lightweight markup languages
+      are.</li>
+
+      <li>The <i>Lore Toolchain</i> converts plain text files formatted using
+      the <i>Lore Syntax</i> into HTML, <a
+      href="https://en.wikipedia.org/wiki/XSL_Formatting_Objects">XSL Formatting
+      Objects</a> or <a
+      href="https://en.wikipedia.org/wiki/DocBook">DocBook/XML</a> files. Other
+      tools like <a href="https://www.princexml.com/">PrinceXML</a>, <a
+      href="https://weasyprint.org/">WeasyPrint</a> or <a
+      href="https://xmlgraphics.apache.org/fop/">Apache FOP</a> can convert HTML
+      or FO files into PDFs.</li>
+
+      <li>A Lore file is an ordered collection of <i>blocks</i>.  Blocks are
+      separated by two End-of-Line sequences (LF or CRLF.)</li>
+        
+      <li>Text decoration markup (bold, underline, monospace and italic) is
+      triggered by enclosing text in digraphs: (!!) for bold, (//) for italic /
+      oblique, (__) for underline and (**) for monospace.</li>
+      
+    </ol>
+  </body>
+</html>
