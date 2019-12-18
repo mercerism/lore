@@ -188,5 +188,174 @@ trigger the formatter.</pre>
       oblique, (__) for underline and (**) for monospace.</li>
       
     </ol>
+
+    <h2>2. Annotations, Metadata and Structural Directives</h2>
+
+    <p>If you remember from the previous section, the <b>Lore</b> syntax was
+    designed to make it simple to attach metadata to arbitrary blocks of
+    text. Metadata can apply to the whole document, a single block or a small
+    span of text. Common bits of document metadata include: a document's author,
+    it's title, a canonical URL where it can be found on the web or a unique
+    document ID.</p>
+
+    <p>Here's an example of a Lore document with metadata attached:</p>
+
+    <pre>::title
+An Example Document with Metadata
+
+::copy
+Copyright (c) 2019 Meadhbh Hamrick, All Rights Reserved
+
+::author
+Meadhbh Hamrick &lt;meadhbh@example.com&gt;
+
+::abstract
+This document provides a simple example of a Lore document with
+metadata.</pre>
+
+    <code><b>02_document_with_metadata.lore</b></code>
+
+    <p>There's no standard interpretation of most metadata; it depends on what
+    the application processing the Lore file thinks it should do. By default,
+    the <code>lore2html</code> utility will convert the document metadata blocks
+    into paragraphs, styled with classes unique to the metadata tag.</p>
+
+    <p>The key take-aways here are:</p>
+
+    <ol>
+      <li>metadata is signified using the "annotation" double-colon digraph (::)</li>
+      <li>metadata "tags" preceed the blocks they annotate</li>
+    </ol>
+
+    <p>From a syntax point of view, document metadata is just one use of the
+    annotation digraph (::). We also use "annotations" to highlight document
+    structure and add plain links to documents. Annotations really are the
+    "everything else" workhorse of Lore.</p>
+
+    <p>Titles and Section headers automagically generate anchors (targets for
+    links) when used with <code>lore2html</code>. The <code>::link</code> annotation
+    inserts an "undecorated" link to a local or remote link target. <i>Undecorated</i> means
+    the text of the link is the URL or local fragment name of the
+    link. "Decorated" links use a different format that's described later.</p>
+
+    <p>Here's another example:</p>
+
+    <pre>::title
+An Example Document with Multiple Sections
+
+This is a document that has multiple sections.
+
+::section
+First Section
+
+This is the first paragraph in the first section.
+
+This is the second paragraph in the first section.
+
+This is a link to a later section:
+::link:#Sub-Section Two .
+
+And this is a link to an external document:
+::link:https://example.com/
+
+::section
+Second Section
+
+This is the first paragraph in the second section.
+
+::section
+::level:1
+Sub-Section One
+  
+This is the first paragraph in the first sub-section of
+the second section.
+
+::section
+::level:1
+Sub-Section Two
+  
+This is the first paragraph in the second sub-section of
+the second section.</pre>
+
+    <code><b>03_document_with_sections.lore</b></code>
+
+    <p>If we processed this file with <code>lore2html</code>, we would get
+    something like this:</p>
+
+    <pre>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;body&gt;
+    &lt;a name="title"/&gt;
+    &lt;h1&gt;An Example Document with Multiple Sections&lt;/h1&gt;
+
+    &lt;p&gt;This is a document that has multiple sections.&lt;/p&gt;
+
+    &lt;p&gt;This is a link to a later section:
+    &lt;a href="#_1_1_sub_section_two"&gt;Sub-Section Two&lt;/a&gt; .&lt;/p&gt;
+
+    &lt;p&gt;And this is a link to an external document:
+    &lt;a href="https://example.com/"&gt;https://example.com/&lt;/a&gt; .
+    &lt;/p&gt;
+
+    &lt;a name="_0_first_section"/&gt;
+    &lt;h2&gt;First Section&lt;/h2&gt;
+
+    &lt;p&gt;This is the first paragraph in the first section.&lt;/p&gt;
+
+    &lt;p&gt;This is the second paragraph in the first section.&lt;/p&gt;
+
+    &lt;a name="_1_second_section"/&gt;
+    &lt;h2&gt;Second Section&lt;/h2&gt;
+
+    &lt;p&gt;This is the first paragraph in the second section.&lt;/p&gt;
+
+    &lt;a name="_1_0_sub_section_one"&gt;
+    &lt;h3&gt;Sub-Section One&lt;/h3&gt;
+
+    &lt;p&gt;This is the first paragraph in the first sub-section of
+    the second section.&lt;/p&gt;
+
+    &lt;a name="_1_1_sub_section_two"&gt;
+    &lt;h3&gt;Sub-Section Two&lt;/h3&gt;
+
+    &lt;p&gt;This is the first paragraph in the second sub-section of
+    the second section.&lt;/p&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</pre>
+
+    <code><b>03_document_with_sections.html</b></code>
+
+    <h3>Design Rationale</h3>
+
+    <p>Many of the documents we wrote contained only two levels; a top level
+    with a title and possibly an abstract followed by several sections. We felt
+    this is the use case that should be easy for content creators. We also felt
+    that metadata <i>should</i> look like an annotation on data that was already
+    going to be in the document. So rather than having a separate metadata tag
+    for common metadata (think of HTML that has a TITLE element inside it's HEAD
+    element) we thought we should just "promote" an existing section with a
+    metadata annotation.</p>
+
+    <p>The original version of Lore used different digraphs to identify metadata
+    (like title, abstract, etc.) from structural annotations
+    (like <code>::section</code> annotations.)  We found it was slightly
+    confusing to the users who had to remember what was metadata and what was
+    structural annotation. And the tools we wrote handled metadata and
+    structural annotation identically during the first phase of parsing. So it
+    may seem weird that we use the annotation digraph (::) for both metadata and
+    structuring the document, but users said it was easier to not have to
+    remember different digraphs and it made no difference to the complexity of
+    the code we wrote.</p>
+
+    <h3>Review</h3>
+
+    <ol>
+      <li>The <i>Annotation Digraph</i> (<code>::</code>) denotes metadata
+      (like title, abstract, author, etc.) as well as structural components in a
+      document (like heading level 1, level 2, etc.)</li>
+
+      <li>You can also insert <i>undecorated</i> links using the annotation digraph.</li>
+    </ol>
+
   </body>
 </html>

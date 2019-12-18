@@ -6,7 +6,7 @@ The authors were dissatisfied with other solutions and decided to make another o
 These files are intended to teach you about Lore by example and to explain its design rationale.
 If you are viewing these files as HTML or PDF documents, you may want to view the "Lore source" that was used to produce them.
 The examples in the text are small and focus on demonstrating a single aspect of the !!Lore Syntax!!, but the source for this document will show you how a complete document was constructed using !!Lore!!.
-You can find it at ::link:remote:https://github.com/mercerism/lore/blob/master/docs/00_introduction.lore .
+You can find it at ::link:https://github.com/mercerism/lore/blob/master/docs/00_introduction.lore .
 
 ::section
 The Very Basics
@@ -115,3 +115,153 @@ Review
 ## Text decoration markup (bold, underline, monospace and italic) is triggered by enclosing text in digraphs:
    (\!!) for bold, (\//) for italic / oblique, (\__) for underline and (\**) for monospace.
 
+::section
+Annotations, Metadata and Structural Directives
+
+If you remember from the previous section, the !!Lore!! syntax was designed to make it simple to attach metadata to arbitrary blocks of text.
+Metadata can apply to the whole document, a single block or a small span of text.
+Common bits of document metadata include:
+a document's author, it's title, a canonical URL where it can be found on the web or a unique document ID.
+
+Here's an example of a Lore document with metadata attached:
+
+;;--- 64 Columns is THIS much ------------------------------------
+::caption:02_document_with_metadata.lore
+  ::title
+  An Example Document with Metadata
+
+  ::copy
+  Copyright (c) 2019 Meadhbh Hamrick, All Rights Reserved
+
+  ::author
+  Meadhbh Hamrick <meadhbh@example.com>
+
+  ::abstract
+  This document provides a simple example of a Lore document with
+  metadata.
+
+There's no standard interpretation of most metadata; it depends on what the application processing the Lore file thinks it should do.
+By default, the **lore2html** utility will convert the document metadata blocks into paragraphs, styled with classes unique to the metadata tag.
+
+The key take-aways here are:
+
+## metadata is signified using the "annotation" double-colon digraph (\::)
+## metadata "tags" preceed the blocks they annotate
+
+From a syntax point of view, document metadata is just one use of the annotation digraph (\::).
+We also use "annotations" to highlight document structure and add plain links to documents.
+Annotations really are the "everything else" workhorse of Lore.
+
+Titles and Section headers automagically generate anchors (targets for links) when used with **lore2html**.
+The **\::link** annotation inserts an "undecorated" link to a local or remote link target.
+//Undecorated// means the text of the link is the URL or local fragment name of the link.
+"Decorated" links use a different format that's described later.
+
+Here's another example:
+
+;;--- 64 Columns is THIS much ------------------------------------
+::caption:03_document_with_sections.lore
+  ::title
+  An Example Document with Multiple Sections
+
+  This is a document that has multiple sections.
+
+  ::section
+  First Section
+
+  This is the first paragraph in the first section.
+
+  This is the second paragraph in the first section.
+
+  This is a link to a later section:
+  ::link:#Sub-Section Two .
+
+  And this is a link to an external document:
+  ::link:https://example.com/
+
+  ::section
+  Second Section
+
+  This is the first paragraph in the second section.
+
+  ::section
+  ::level:1
+  Sub-Section One
+  
+  This is the first paragraph in the first sub-section of
+  the second section.
+
+  ::section
+  ::level:1
+  Sub-Section Two
+  
+  This is the first paragraph in the second sub-section of
+  the second section.
+
+If we processed this file with **lore2html**, we would get something like this:
+
+;;--- 64 Columns is THIS much ------------------------------------
+::caption:03_document_with_sections.html
+  <!DOCTYPE html>
+  <html>
+    <body>
+      <a name="title"/>
+      <h1>An Example Document with Multiple Sections</h1>
+
+      <p>This is a document that has multiple sections.</p>
+
+      <p>This is a link to a later section:
+      <a href="#_1_1_sub_section_two">Sub-Section Two</a> .</p>
+
+      <p>And this is a link to an external document:
+      <a href="https://example.com/">https://example.com/</a> .
+      </p>
+
+      <a name="_0_first_section"/>
+      <h2>First Section</h2>
+
+      <p>This is the first paragraph in the first section.</p>
+
+      <p>This is the second paragraph in the first section.</p>
+
+      <a name="_1_second_section"/>
+      <h2>Second Section</h2>
+
+      <p>This is the first paragraph in the second section.</p>
+
+      <a name="_1_0_sub_section_one">
+      <h3>Sub-Section One</h3>
+
+      <p>This is the first paragraph in the first sub-section of
+      the second section.</p>
+
+      <a name="_1_1_sub_section_two">
+      <h3>Sub-Section Two</h3>
+
+      <p>This is the first paragraph in the second sub-section of
+      the second section.</p>
+    </body>
+  </html>
+
+::section
+::level:1
+Design Rationale
+
+Many of the documents we wrote contained only two levels;
+a top level with a title and possibly an abstract followed by several sections.
+We felt this is the use case that should be easy for content creators.
+We also felt that metadata //should// look like an annotation on data that was already going to be in the document.
+So rather than having a separate metadata tag for common metadata (think of HTML that has a TITLE element inside it's HEAD element) we thought we should just "promote" an existing section with a metadata annotation.
+
+The original version of Lore used different digraphs to identify metadata (like title, abstract, etc.) from structural annotations (like **\::section** annotations.)
+We found it was slightly confusing to the users who had to remember what was metadata and what was structural annotation.
+And the tools we wrote handled metadata and structural annotation identically during the first phase of parsing.
+So it may seem weird that we use the annotation digraph (\::) for both metadata and structuring the document, but users said it was easier to not have to remember different digraphs and it made no difference to the complexity of the code we wrote.
+
+::section
+::level:1
+Review
+
+## The //Annotation Digraph// (**\::**) denotes metadata (like title, abstract, author, etc.) as well
+   as structural components in a document (like heading level 1, level 2, etc.)
+## You can also insert //undecorated// links using the annotation digraph.
