@@ -24,3 +24,11 @@ syntax that was easy to parse.
 
 If you are new to !!Lore!!, consider reading
 @@ ./00_introduction.html An Introduction to Lore @@.
+
+The authors of this site are indebted to B. Jackowski,
+J. M. Nowacki, et al. for their work on the **TeX Gyre**
+collection of fonts. This site uses the
+@@ http://www.gust.org.pl/projects/e-foundry/tex-gyre/pagella TeX
+Gyre Pagella @@ typeface, which is distributed under the
+@@ http://www.gust.org.pl/projects/e-foundry/licenses GUST Font
+License (GFL) @@.
