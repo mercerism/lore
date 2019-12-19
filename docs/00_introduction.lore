@@ -6,7 +6,7 @@ The authors were dissatisfied with other solutions and decided to make another o
 These files are intended to teach you about Lore by example and to explain its design rationale.
 If you are viewing these files as HTML or PDF documents, you may want to view the "Lore source" that was used to produce them.
 The examples in the text are small and focus on demonstrating a single aspect of the !!Lore Syntax!!, but the source for this document will show you how a complete document was constructed using !!Lore!!.
-You can find it at ::link:https://github.com/mercerism/lore/blob/master/docs/00_introduction.lore .
+You can find it at ::link:https://github.com/mercerism/lore/blob/master/docs/00_introduction.lore:.
 
 ::section
 The Very Basics
@@ -17,7 +17,7 @@ The !!Lore Toolchain!! includes command-line utilities that convert files format
 As an example, you would use the **lore2html** utility to convert the following fragment into HTML:
 
 ;;--- 64 Columns is THIS much ------------------------------------
-::caption:01_simple_example.lore
+::caption:01_simple_example.lore:
   This is a simple example of a //Lore file//.  It contains a few
   sentences in a few paragraphs.  We hope you find the markup is
   __intuitive__ and does not distract from typing content.
@@ -39,7 +39,7 @@ To convert this to HTML, you would use the following command (assuming the name 
 And you should get the following HTML out:
 
 ;;--- 64 Columns is THIS much ------------------------------------
-::caption:01_simple_example.html
+::caption:01_simple_example.html:
   <!DOCTYPE html>
   <html>
     <body>
@@ -126,7 +126,7 @@ a document's author, it's title, a canonical URL where it can be found on the we
 Here's an example of a Lore document with metadata attached:
 
 ;;--- 64 Columns is THIS much ------------------------------------
-::caption:02_document_with_metadata.lore
+::caption:02_document_with_metadata.lore:
   ::title
   An Example Document with Metadata
 
@@ -160,7 +160,7 @@ The **\::link** annotation inserts an "undecorated" link to a local or remote li
 Here's another example:
 
 ;;--- 64 Columns is THIS much ------------------------------------
-::caption:03_document_with_sections.lore
+::caption:02_document_with_sections.lore:
   ::title
   An Example Document with Multiple Sections
 
@@ -174,10 +174,10 @@ Here's another example:
   This is the second paragraph in the first section.
 
   This is a link to a later section:
-  ::link:#Sub-Section Two .
+  ::link:#Sub-Section Two:.
 
   And this is a link to an external document:
-  ::link:https://example.com/
+  ::link:https://example.com/:
 
   ::section
   Second Section
@@ -201,7 +201,7 @@ Here's another example:
 If we processed this file with **lore2html**, we would get something like this:
 
 ;;--- 64 Columns is THIS much ------------------------------------
-::caption:03_document_with_sections.html
+::caption:02_document_with_sections.html:
   <!DOCTYPE html>
   <html>
     <body>
@@ -211,10 +211,10 @@ If we processed this file with **lore2html**, we would get something like this:
       <p>This is a document that has multiple sections.</p>
 
       <p>This is a link to a later section:
-      <a href="#_1_1_sub_section_two">Sub-Section Two</a> .</p>
+      <a href="#_1_1_sub_section_two">Sub-Section Two</a>.</p>
 
       <p>And this is a link to an external document:
-      <a href="https://example.com/">https://example.com/</a> .
+      <a href="https://example.com/">https://example.com/</a>.
       </p>
 
       <a name="_0_first_section"/>
@@ -245,6 +245,33 @@ If we processed this file with **lore2html**, we would get something like this:
 
 ::section
 ::level:1
+A Closer Look at Block Structure
+
+Now that we've seen annotations in action, let's look at the structure of a block.
+As you remember from the section above (::link:#The Very Basics:), blocks are sequences of characters separated by two EOLs (End of Lines.)
+Metadata annotations are semantically attached to blocks.
+Blocks usually have text, but it's possible to make a block with //only// metadata annotations.
+
+Blocks may also have //comment lines//.
+Comments lines only appear at the beginning of a block and are denoted by placing two semi-colons at the beginning of the line.
+If you need to include two semicolons at the beginning of a line; that is, you !!don't!! want the dual semi-colon digraph to be interpreted as a comment, you can use a backslash "escape" as described in the ::link:#Escaping and Preformatted Blocks: section below.
+
+The structure of a block is comments, annotations (metadata) and then content.
+The following example shows an annotated block, an annotation-only block and a block with comments:
+
+;;--- 64 Columns is THIS much ------------------------------------
+::caption:02_blocks.html:
+  ::title
+  An Example Document With Annotated and Commented Blocks
+
+  ::docid:ab9d99e6-9f04-4317-971c-4a64291b41b6
+
+  ;; This is a simple example of a comment
+  ::abstract
+  This is a simple example document.
+
+::section
+::level:1
 Design Rationale
 
 Many of the documents we wrote contained only two levels;
@@ -265,3 +292,257 @@ Review
 ## The //Annotation Digraph// (**\::**) denotes metadata (like title, abstract, author, etc.) as well
    as structural components in a document (like heading level 1, level 2, etc.)
 ## You can also insert //undecorated// links using the annotation digraph.
+## Blocks consist of comment lines, annotations and content (in that order.)
+## Comment lines begin with two semicolons (**\;;**).
+
+::section
+Decorated Links
+
+In the section above (::link:#Annotations, Metadata and Structural Directives:), we saw how to specify undecorated links.
+They're called "undecorated" because the link target and the link text are the same.
+"Decorated" links are links that are decorated with arbitrary text.
+Decorated links are comprised of a URL and the decoration text surrounded by the //link digraph// or two at-signs (**\@@**):
+
+  @@ URL text @@
+
+Here is a simple example:
+
+;;--- 64 Columns is THIS much ------------------------------------
+::caption:03_links.lore:
+  Here is a simple example of a decorated link.
+  @@ https://example.org/ Click here to go to !!example.org!! @@.
+
+  Links can occur __within other formatting directives.
+  @@ https://example.com/ Click here to go to example.com @@__.
+
+Which would be rendered as:
+
+;;--- 64 Columns is THIS much ------------------------------------
+::caption:03_links.html:
+  <!DOCTYPE html>
+  <html>
+    <body>
+      <p>Here is a simple example of a decorated link.
+      <a href="https://example.org/">Click here to go to
+      <b>example.org</b></a>.</p>
+
+      <p>Links can occur <u>within other formatting directives.
+      <a href="https://example.com/">Click here to go to
+      example.com</a></u></p>
+    </body>
+  </html>
+
+::section
+::level:1
+Review
+
+## Decorated links take the format of a URL and decoration text enclosed by the decorated
+   link digraph (**\@@**).
+## Decorated links can include styled / formatted text and can be included in styled /
+   formatted text.
+## Decorated links can occur within lists (which will be covered in a later section.)
+
+::section
+Escaping and Preformatted Blocks
+
+We selected syntactically significant digraphs for both their intuitive meaning and their uncommonness in typical english prose.
+A single slash is common, but outside of a programming language, a double slash is not.
+A single colon is common, but a double-colon is not.
+But what if a writer really wanted to include a double slash or a double colon? (or any of the other meaningful digraphs?)
+!!Lore!! uses the an escaping scheme similar to other systems: it puts a backslash (**\\**) in front of the thing to be literally inserted into the text.
+A literal backslash is denoted by two backslashes (**\\\\**).
+
+Consider this example, which shows a table of common Lore digraphs:
+
+::caption::04_lore_cheat_sheet.lore:
+  || \!! || Bold            ||
+  || \// || Italic          ||
+  || \__ || Underline       ||
+  || \** || Monospace       ||
+  || \$$ || Span            ||
+  || \:: || Annotation      ||
+  || \## || Ordered Lists   ||
+  || \++ || Unordered Lists ||
+  || \|| || Tables          ||
+  || \;; || Leading Comment ||
+  || \⎵⎵ || Leading Blank   ||
+  || \\  || Backslash       ||
+
+The important aspect of this table is the use of the backslash in front of each of the digraphs.
+This tells the formatter not to try to use the digraph as a formatting (or annotation) instruction, but simply to insert that digraph into the text.
+
+Related to escaped digraphs are //preformatted blocks//.
+Preformatted blocks are blocks whose content is not interpreted as formatting instructions or annotations and are intended to be rendered exactly as they appear.
+Preformatted blocks are denoted as blocks whose first two characters are spaces (**⎵⎵**).
+If you need to include two spaces at the beginning of a line; that is, you !!don't!! want the dual space digraph to be interpreted as the start of a preformatted block line, you can use a backslash "escape" as shown in the chart above.
+No formatting or annotation is honored in preformatted blocks.
+
+The Lore syntax itself does not require preformatted blocks be rendered in any particular way, but it's a good guess that the **lore2html** tool will render preformatted blocks as !!<PRE>!! elements in HTML.
+
+The Lore source of this document provides several examples of preformatted blocks.
+You can find it at ::link:https://github.com/mercerism/lore/blob/master/docs/00_introduction.lore:.
+But here is a simple example:
+
+;;--- 64 Columns is THIS much ------------------------------------
+::caption:04_preformatted.lore:
+  ::title
+  A Simple Example of a Preformatted Block
+
+  As the title suggests, this is a simple example of a
+  pre-formatted block. Note that it is prefixed with a caption
+  annotation.
+
+  ::caption:Ascii Art Rocks:
+    oooo
+    `888
+     888   .ooooo.  oooo d8b  .ooooo.
+     888  d88' `88b `888""8P d88' `88b
+     888  888   888  888     888ooo888
+     888  888   888  888     888    .o
+    o888o `Y8bod8P' d888b    `Y8bod8P'
+
+                                 oooo
+                                 `888
+    oooo d8b  .ooooo.   .ooooo.   888  oooo   .oooo.o
+    `888""8P d88' `88b d88' `"Y8  888 .8P'   d88(  "8
+     888     888   888 888        888888.    `"Y88b.
+     888     888   888 888   .o8  888 `88b.  o.  )88b
+    d888b    `Y8bod8P' `Y8bod8P' o888o o888o 8""888P' 
+
+::section
+::level:1
+Design Rationale
+
+Most lightweight markup languages provide a way to escape syntactically significant characters and prepending syntax with backslash character is a common way to do it.
+We simply re-implemented a common solution.
+
+Preformatted blocks are also common in lightweight markup languages, as is using leading spaces to denote them in the source text.
+Some languages use four leading spaces; others use one or more.
+Since everything else is a digraph in Lore, we thought it would be weird if we !!didn't!! use two leading spaces to denote a preformatted block.
+
+::section
+::level:1
+Review
+
+## The backslash (**\\**) is the escape character.
+## Put a backslash in front of any semantically important digraph (\//, \!!, \__, etc.) and it will
+   demote the digraph to "plain ol' text."
+## Preformatted blocks are signified by a block where each line has two leading spaces (⎵⎵).
+## No formatting is honored in preformatted blocks.
+
+::section
+Including Images, Audio or Video
+
+Rich media is an important part of modern communication.
+While !!Lore!! was not intended to be a rich multi-media authoring system, it does support basic multi-media content.
+Lore assumes images, videos and audio clips will exist as separate files and will be included into the document by reference.
+
+Images are referenced using an //Image Annotation// with the following format:
+
+  ::image:height:width:URL
+
+The height and width fields are optional, but the enclosing colons must be maintained.
+Here are examples of an image references that do not specify the height or width:
+
+  ::image:::./images/4624806398_2b76614983.jpg
+  ::image:::https://live.staticflickr.com/4006/4624806398_2b76614983.jpg
+
+And here is what happens when you insert a reference to an image:
+
+::image:::./images/4624806398_2b76614983.jpg
+
+This image, "love" by Jon Obsworth, is licensed under CC BY-ND 2.0.
+The authors of this document thank Jon for making this image public.
+More information can be found at ::link:https://search.creativecommons.org/photos/8f05b41a-300f-46db-86c7-e61cac1f8860:.
+
+Image references can be enclosed in links, spans or lists.
+
+While Lore tries to separate content from its presentation, this is difficult when it comes to enclosed media.
+Lore does not provide syntax to specify captions, float, clearance or styling of images.
+However, it does allow the use of //class annotation//.
+Class annotation is described in greater detail in the **lore2html** documentation.
+For our purposes, it is enough to know that a class annotation !!immediately before!! an image reference will instruct the **lore2html** parser to include a style attribute in the image tag it renders.
+
+For example, this lore text:
+
+  ::class:thumb ::image:15:20:./images/4624806398_2b76614983.jpg
+
+Will cause this to be rendered in HTML:
+
+  <img class="thumb" height="15" width="20" src="./images/4624806398_2b76614983.jpg"/>
+
+Multiple annotations can be applied to an image.
+This Lore fragment:
+
+  ::caption:'love' by jon obsworth: ::class:floatleft ::image:::./images/4624806398_2b76614983.jpg
+
+Will render as this HTML by default:
+
+  <img class="thumb" height="15" width="20"
+    src="./images/4624806398_2b76614983.jpg"
+    alt="'love' by jon obsworth"/>
+  <code><b>'love' by jon obsworth</b></code>
+
+See the documentation for **lore2html** for information about including CSS style sheets in HTML generated from Lore.
+
+Audio files are included in a document in the similar way: using an audio annotation.
+Audio references include only the URL to the audio sample, but can be preceeded with caption or class annotations.
+Here is an example of an audio reference with CSS styling and a caption:
+
+  ::caption:Example Audio: ::class:podcast ::audio:https://example.com/lore_podcast.ogg
+
+The //controls annotation// signals the **lore2html** utility to add a **controls** attribute to the HTML it generates.
+For example, this audio reference:
+
+  ::controls ::class:podcast ::audio:https://example.com/podcast_week_2.ogg
+
+Will generate this HTML:
+
+  <audio class="podcast" controls muted src="https://example.com/podcast_week_2.ogg">
+    Your browser does not support the audio element.
+  </audio>
+
+The Lore specification itself does not cover common options to the audio HTML element.
+But the **lore2html** utility allows users to specify which options to include in HTML <AUDIO> tags.
+
+Video references are similar to both audio and image references.
+Video references include a height and width but also honor the controls annotation.
+For example, this video reference:
+
+  ::controls ::video:160:240:https://example.org/video_sample.mp4
+
+Will generate this HTML:
+
+  <video controls height="160" width="240" source="https://example.org/video_sample.mp4">
+    Your browser does not support the audio element.
+  </video>
+
+And in the same way audio attribute options can be set with the **lore2html** utility, so can video attribute options.
+
+::section
+::level:1
+Design Rationale
+
+Multi-media inclusions were difficult for the Lore designers.
+Lore is focused on text and in many ways we didn't want to think about multi-media options.
+Lore is not a multi-media authoring system, but how useful is a communication tool that doesn't at least address images and sounds?
+
+Lore was not designed to be all things to all people.
+It started as an experiment and grew into something useful.
+Along the way we discovered we really didn't need a lot of syntax and the less syntax you add, the easier it is to read the documents.
+
+We believe we found a decent middle-ground between utility and complexity.
+Much of what designers //really// want when they style multi-media content is not the domain of Lore.
+Lore is about annotating text with just enough syntax to cover the 80% case; everything else is an annotation consumed by a specific tool (like **lore2html**.)
+Multi-media inclusions use annotations (double-colon markup) because it's really the job of tools like **lore2html** or **lore2docbook** to figure out how they are to be rendered.
+
+::section
+::level:1
+Review
+
+## Image, Audio and Video multi-media inclusions use annotations to reference an external media file.
+## Media-specific options (like the \::controls or \::class annotations) can be used in conjunction
+   with the  multi-media annotation to give a rendering app (like **lore2html**) more context about how
+   the media is to be rendered.
+## Different rendering apps likely have other options for altering how media inclusions are rendered.
+## Caption annotations should work with Images, Audio clips and Videos.

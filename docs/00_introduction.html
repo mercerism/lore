@@ -44,7 +44,8 @@
     of the <b>Lore Syntax</b>, but the source for this document will
     show you how a complete document was constructed using <b>Lore</b>. You
     can find it at <a href="https://github.com/mercerism/lore/blob/master/docs/00_introduction.lore">https://github.com/mercerism/lore/blob/master/docs/00_introduction.lore</a> .</p>
-    
+
+    <a name="_0_The_Very_Basics"/>
     <h2>1. The Very Basics</h2>
 
     <p><b>Lore</b> is a markup syntax, a toolchain and a set of assumptions
@@ -189,6 +190,7 @@ trigger the formatter.</pre>
       
     </ol>
 
+    <a name="_1_Annotations__Metadata_and_Structural_Directives"/>
     <h2>2. Annotations, Metadata and Structural Directives</h2>
 
     <p>If you remember from the previous section, the <b>Lore</b> syntax was
@@ -277,7 +279,7 @@ Sub-Section Two
 This is the first paragraph in the second sub-section of
 the second section.</pre>
 
-    <code><b>03_document_with_sections.lore</b></code>
+    <code><b>02_document_with_sections.lore</b></code>
 
     <p>If we processed this file with <code>lore2html</code>, we would get
     something like this:</p>
@@ -323,8 +325,41 @@ the second section.</pre>
   &lt;/body&gt;
 &lt;/html&gt;</pre>
 
-    <code><b>03_document_with_sections.html</b></code>
+    <code><b>02_document_with_sections.html</b></code>
 
+    <h3>A Closer Look at Block Structure</h3>
+
+    <p>Now that we've seen annotations in action, let's look at the structure of
+    a block. As you remember from the section above
+    (<a href="#_0_The_Very_Basics">The Very Basics</a>),
+    blocks are sequences of characters separated by two EOLs (End of Lines.)
+    Metadata annotations are semantically attached to blocks. Blocks usually
+    have text, but it's possible to make a block with <i>only</i> metadata
+    annotations.</p>
+
+    <p>Blocks may also have <i>comment lines</i>. Comments lines only appear at
+    the beginning of a block and are denoted by placing two semi-colons at the
+    beginning of the line. If you need to include two semicolons at the
+    beginning of a line; that is, you <b>don't</b> want the dual semi-colon
+    digraph to be interpreted as a comment, you can use a backslash "escape" as
+    described in the <a href="#_4_Escaping_and_Preformatted_Blocks">Escaping
+    and Preformatted Blocks</a> section below.</p>
+
+    <p>The structure of a block is comments, annotations (metadata) and then
+    content. The following example shows an annotated block, an annotation-only
+    block and a block with comments:</p>
+
+    <pre>::title An Example Document With Annotated and
+Commented Blocks
+
+::docid:ab9d99e6-9f04-4317-971c-4a64291b41b6
+
+;; This is a simple example of a comment
+::abstract
+This is a simple example document.</pre>
+
+    <code><b>02_blocks.html</b></code>
+    
     <h3>Design Rationale</h3>
 
     <p>Many of the documents we wrote contained only two levels; a top level
@@ -355,7 +390,308 @@ the second section.</pre>
       document (like heading level 1, level 2, etc.)</li>
 
       <li>You can also insert <i>undecorated</i> links using the annotation digraph.</li>
+
+      <li>Blocks consist of comment lines, annotations and content (in that order.)</li>
+      
+      <li>Comment lines begin with two semicolons (<code>;;</code>).</li>
+
     </ol>
 
+    <h2>3. Decorated Links</h2>
+
+    <p>In the section above
+    (<a href="#_1_Annotations__Metadata_and_Structural_Directives">Annotations, Metadata
+    and Structural Directives</a>), we saw how to specify undecorated links.
+    They're called "undecorated" because the link target and the link text are
+    the same.  "Decorated" links are links that are decorated with arbitrary
+    text.  Decorated links are comprised of a URL and the decoration text
+    surrounded by the <i>link digraph</i> or two at-signs (<code>@@</code>):</p>
+
+    <pre>@@ URL text @@</pre>
+
+    <p>Here is a simple example:</p>
+
+    <pre>Here is a simple example of a decorated link.
+@@ https://example.org/ Click here to go to !!example.org!! @@.
+
+Links can occur __within other formatting directives.
+@@ https://example.com/ Click here to go to example.com @@__.</pre>
+
+    <code><b>03_links.lore</b></code>
+    
+    <p>Which would be rendered as:</p>
+
+    <pre>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;body&gt;
+    &lt;p&gt;Here is a simple example of a decorated link.
+    &lt;a href="https://example.org/"&gt;Click here to go to
+    &lt;b&gt;example.org&lt;/b&gt;&lt;/a&gt;.&lt;/p&gt;
+
+    &lt;p&gt;Links can occur &lt;u&gt;within other formatting directives.
+    &lt;a href="https://example.com/"&gt;Click here to go to
+    example.com&lt;/a&gt;&lt;/u&gt;&lt;/p&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</pre>
+
+    <code><b>03_links.html</b></code>
+
+    <h3>Review</h3>
+
+    <ol>
+
+      <li>Decorated links take the format of a URL and decoration text enclosed
+      by the decorated link digraph (<code>@@</code>).</li>
+      
+      <li>Decorated links can include styled / formatted text and can be
+      included in styled / formatted text.</li>
+      
+      <li>Decorated links can occur within lists (which will be covered in a
+      later section.)</li>
+
+    </ol>
+
+    <a name="_4_Escaping_and_Preformatted_Blocks"/>
+    <h2>4. Escaping and Preformatted Blocks</h2>
+
+    <p>We selected syntactically significant digraphs for both their intuitive
+    meaning and their uncommonness in typical english prose. A single slash is
+    common, but outside of a programming language, a double slash is not. A
+    single colon is common, but a double-colon is not. But what if a writer
+    really wanted to include a double slash or a double colon? (or any of the
+    other meaningful digraphs?) <b>Lore</b> uses the an escaping scheme similar to
+    other systems: it puts a backslash (<code>\</code>) in front of the thing to
+    be literally inserted into the text. A literal backslash is denoted by two
+    backslashes (<code>\\</code>).</p>
+
+    <p>Consider this example, which shows a table of common Lore digraphs:</p>
+
+    <pre>|| \!! || Bold            ||
+|| \// || Italic          ||
+|| \__ || Underline       ||
+|| \** || Monospace       ||
+|| \$$ || Span            ||
+|| \:: || Annotation      ||
+|| \## || Ordered Lists   ||
+|| \++ || Unordered Lists ||
+|| \|| || Tables          ||
+|| \;; || Leading Comment ||
+|| \⎵⎵ || Leading Blank   ||
+|| \\  || Backslash       ||</pre>
+    <code><b>04_lore_cheat_sheet.lore</b></code>
+
+    <p>The important aspect of this table is the use of the backslash in front
+    of each of the digraphs. This tells the formatter not to try to use the
+    digraph as a formatting (or annotation) instruction, but simply to insert
+    that digraph into the text.</p>
+
+    <p>Related to escaped digraphs are <i>preformatted blocks</i>. Preformatted
+    blocks are blocks whose content is not interpreted as formatting
+    instructions or annotations and are intended to be rendered exactly as they
+    appear. Preformatted blocks are denoted as blocks whose first two characters
+    are spaces (<code>⎵⎵</code>). If you need to include two spaces at the
+    beginning of a line; that is, you <b>don't</b> want the dual space digraph to
+    be interpreted as the start of a preformatted block line, you can use a
+    backslash "escape" as shown in the chart above. No formatting or annotation
+    is honored in preformatted blocks.</p>
+
+    <p>The Lore syntax itself does not require preformatted blocks be rendered
+    in any particular way, but it's a good guess that the <code>lore2html</code> tool
+    will render preformatted blocks as <b>&lt;PRE&gt;</b> elements in HTML.</p>
+
+    <p>The Lore source of this document provides several examples of
+    preformatted blocks. You can find it at
+    <a href="https://github.com/mercerism/lore/blob/master/docs/00_introduction.lore">
+    https://github.com/mercerism/lore/blob/master/docs/00_introduction.lore</a>.
+    But here is a simple example:</p>
+
+    <pre>::title
+A Simple Example of a Preformatted Block
+
+As the title suggests, this is a simple example of a
+pre-formatted block. Note that it is prefixed with a caption
+annotation.
+
+::caption:Ascii Art Rocks
+  oooo
+  `888
+   888   .ooooo.  oooo d8b  .ooooo.
+   888  d88' `88b `888""8P d88' `88b
+   888  888   888  888     888ooo888
+   888  888   888  888     888    .o
+  o888o `Y8bod8P' d888b    `Y8bod8P'
+
+                               oooo
+                               `888
+  oooo d8b  .ooooo.   .ooooo.   888  oooo   .oooo.o
+  `888""8P d88' `88b d88' `"Y8  888 .8P'   d88(  "8
+   888     888   888 888        888888.    `"Y88b.
+   888     888   888 888   .o8  888 `88b.  o.  )88b
+  d888b    `Y8bod8P' `Y8bod8P' o888o o888o 8""888P'</pre>
+
+    <code><b>04_preformatted.lore</b></code>
+
+    <h3>Design Rationale</h3>
+
+    <p>Most lightweight markup languages provide a way to escape syntactically
+    significant characters and prepending syntax with backslash character is a
+    common way to do it. We simply re-implemented a common solution.</p>
+
+    <p>Preformatted blocks are also common in lightweight markup languages, as
+    is using leading spaces to denote them in the source text. Some languages
+    use four leading spaces; others use one or more. Since everything else is
+    a digraph in Lore, we thought it would be weird if we <b>didn't</b> use two
+    leading spaces to denote a preformatted block.</p>
+
+    <h3>Review</h3>
+
+    <ol>
+      
+      <li>The backslash (<code>\</code>) is the escape character.</li>
+      <li>Put a backslash in front of any semantically important digraph (//, !!, __, etc.) and it will demote the digraph to "plain ol' text."</li>
+      <li>Preformatted blocks are signified by a block where each line has two leading spaces (⎵⎵).</li>
+      <li>No formatting is honored in preformatted blocks.</li>
+    </ol>
+
+    <h2>5. Including Images, Audio or Video</h2>
+
+    <p>Rich media is an important part of modern communication. While <b>Lore</b> was
+    not intended to be a rich multi-media authoring system, it does support
+    basic multi-media content. Lore assumes images, videos and audio clips will
+    exist as separate files and will be included into the document by reference.</p>
+
+    <p>Images are referenced using an <i>Image Annotation</i> with the following format:</p>
+
+    <pre>::image:height:width:URL</pre>
+
+    <p>The height and width fields are optional, but the enclosing colons must
+    be maintained. Here are examples of an image references that do not specify
+    the height or width:</p>
+
+    <pre>::image:::./images/4624806398_2b76614983.jpg
+::image:::https://live.staticflickr.com/4006/4624806398_2b76614983.jpg</pre>
+
+    <p>And here is what happens when you insert a reference to an image:</p>
+
+    <img src="./images/4624806398_2b76614983.jpg"/>
+
+    <p>This image, "love" by Jon Obsworth, is licensed under CC BY-ND 2.0. The
+    authors of this document thank Jon for making this image public. More
+    information can be found at <a href="https://search.creativecommons.org/photos/8f05b41a-300f-46db-86c7-e61cac1f8860">https://search.creativecommons.org/photos/8f05b41a-300f-46db-86c7-e61cac1f8860</a>.</p>
+
+    <p>Image references can be enclosed in links, spans or lists.</p>
+
+    <p>While Lore tries to separate content from its presentation, this is
+    difficult when it comes to enclosed media. Lore does not provide syntax to
+    specify captions, float, clearance or styling of images. However, it does
+    allow the use of <i>class annotation</i>. Class annotation is described in
+    greater detail in the <code>lore2html</code> documentation. For our
+    purposes, it is enough to know that a class annotation <b>immediately
+    before</b> an image reference will instruct the <code>lore2html</code>
+    parser to include a style attribute in the image tag it renders.</p>
+
+    <p>For example, this lore text:</p>
+
+    <pre>::class:thumb ::image:15:20:./images/4624806398_2b76614983.jpg</pre>
+
+    <p>Will cause this to be rendered in HTML:</p>
+
+    <pre>&lt;img class="thumb" height="15" width="20" src="./images/4624806398_2b76614983.jpg"/&gt;</pre>
+
+    <p>Multiple annotations can be applied to an image. This Lore fragment:</p>
+
+    <pre>::caption:'love' by jon obsworth: ::class:floatleft ::image:::./images/4624806398_2b76614983.jpg</pre>
+
+    <p>Will render as this HTML by default:</p>
+
+    <pre>&lt;img class="thumb" height="15" width="20"
+  src="./images/4624806398_2b76614983.jpg"
+  alt="'love' by jon obsworth"/&gt;
+&lt;code&gt;&lt;b&gt;'love' by jon obsworth&lt;/b&gt;&lt;/code&gt;</pre>
+
+    <p>See the documentation for <code>lore2html</code> for information about
+    including CSS style sheets in HTML generated from Lore.</p>
+
+    <p>Audio files are included in a document in the similar way: using an audio
+    annotation. Audio references include only the URL to the audio sample, but
+    can be preceeded with caption or class annotations. Here is an example of an
+    audio reference with CSS styling and a caption:</p>
+
+    <pre>::caption:Example Audio: ::class:podcast ::audio:https://example.com/lore_podcast.ogg</pre>
+
+    <p>The <i>controls annotation</i> signals the <code>lore2html</code> utility
+    to add a <code>controls</code> attribute to the HTML it generates. For example,
+    this audio reference:</p>
+
+    <pre>::controls ::class:podcast ::audio:https://example.com/podcast_week_2.ogg</pre>
+
+    <p>Will generate this HTML:</p>
+
+    <pre>&lt;audio class="podcast" controls muted src="https://example.com/podcast_week_2.ogg"&gt;
+  Your browser does not support the audio element.
+&lt;/audio&gt;</pre>
+
+    <p>The Lore specification itself does not cover common options to the audio
+    HTML element. But the <code>lore2html</code> utility allows users to specify
+    which options to include in HTML &lt;AUDIO&gt; tags.</p>
+
+    <p>Video references are similar to both audio and image references. Video
+    references include a height and width but also honor the controls
+    annotation. For example, this video reference:</p>
+
+    <pre>::controls ::video:160:240:https://example.org/video_sample.mp4</pre>
+
+    <p>Will generate this HTML:</p>
+
+    <pre>&lt;video controls height="160" width="240" source="https://example.org/video_sample.mp4"&gt;
+  Your browser does not support the audio element.
+&lt;/video&gt;</pre>
+
+    <p>And in the same way audio attribute options can be set with the
+    <code>lore2html</code> utility, so can video attribute options.</p>
+
+    <h3>Design Rationale</h3>
+
+    <p>Multi-media inclusions were difficult for the Lore designers. Lore is
+    focused on text and in many ways we didn't want to think about multi-media
+    options. Lore is not a multi-media authoring system, but how useful is a
+    communication tool that doesn't at least address images and sounds?</p>
+
+    <p>Lore was not designed to be all things to all people. It started as an
+    experiment and grew into something useful. Along the way we discovered we
+    really didn't need a lot of syntax and the less syntax you add, the easier
+    it is to read the documents.</p>
+
+    <p>We believe we found a decent middle-ground between utility and
+    complexity. Much of what designers <i>really</i> want when they style
+    multi-media content is not the domain of Lore. Lore is about annotating text
+    with just enough syntax to cover the 80% case; everything else is an
+    annotation consumed by a specific tool (like <code>lore2html</code>.)
+    Multi-media inclusions use annotations (double-colon markup) because it's
+    really the job of tools like <code>lore2html</code> or
+    <code>lore2docbook</code> to figure out how they are to be rendered.</p>
+
+    <h3>Review</h3>
+
+    <ol>
+
+      <li>Image, Audio and Video multi-media inclusions use annotations to
+      reference an external media file.</li>
+
+      <li>Media-specific options (like the ::controls or ::class annotations)
+      can be used in conjunction with the multi-media annotation to give a
+      rendering app (like <code>lore2html</code>) more context about how the
+      media is to be rendered.</li>
+
+      <li>Different rendering apps likely have other options for altering how
+      media inclusions are rendered.</li>
+
+      <li>Caption annotations should work with Images, Audio clips and Videos.</li>
+
+    </ol>
+    
   </body>
 </html>
+
+
+    
