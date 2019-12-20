@@ -29,6 +29,40 @@
       pre + code {
         background-color: #F7F7F7;
       }
+
+      table {
+        margin-left: 2em;
+        padding: 4px;
+        width: 100%;
+        border-collapse: collapse;
+      }
+     
+      table td, table th {
+        border: 1px solid black;
+        padding: 4px;
+      }
+
+      table caption {
+        background-color: black;
+        color: white;
+      }
+
+     table.dark td, table.dark th, table tr.dark, td.dark, th.dark {
+       background-color: #7F7F7F;
+       color: white;
+     }
+
+     table.left td, table.left th, tr.left td, tr.left th, td.left, th.left {
+       text-align: left;
+     }
+
+     table.right td, table.right th, tr.right td, tr.right th, td.right, th.right {
+       text-align: right;
+     }
+
+     table.thin {
+       width: 50%;
+     }
     </style>
   </head>
   <body>
@@ -397,6 +431,7 @@ This is a simple example document.</pre>
 
     </ol>
 
+    <a name="_3_Decorated_Links"/>
     <h2>3. Decorated Links</h2>
 
     <p>In the section above
@@ -466,6 +501,7 @@ Links can occur __within other formatting directives.
 
     <p>Consider this example, which shows a table of common Lore digraphs:</p>
 
+    <a name="_4_04_lore_cheat_sheet_lore"/>
     <pre>|| \!! || Bold            ||
 || \// || Italic          ||
 || \__ || Underline       ||
@@ -689,7 +725,275 @@ annotation.
       <li>Caption annotations should work with Images, Audio clips and Videos.</li>
 
     </ol>
-    
+
+    <h2>6. Styling Arbitrary Text</h2>
+
+    <p>The designers of Lore attempted to separate content from it's
+    presentation. That is, we hoped to avoid mandating specific styles
+    for any particular text fragment. However, we felt it was
+    necessary to allow authors using the Lore syntax to highlight
+    arbitrary text with styling metadata. We don't define how "styled"
+    text is rendered, but we do describe a mechanism for communicating
+    that text should be styled to the renderer.</p>
+
+    <p>Styled text uses the double-dollar digraph (<code>$$</code>) to
+    enclose a style description and a text fragment. In the example
+    below, we see a paragraph that includes styled text:</p>
+
+    <pre>This is a simple example of unstyled text. Lore provides syntax
+for bold, italic, underlined and monospace. But what if we
+needed to annotate a text fragment that needed to be $$ invert
+printed in inverse colors? $$ How would that work?</pre>
+    <code><b>06_styled_text.lore</b></code>
+
+    <p>This fragment would then be rendered as:</p>
+
+    <pre>&lt;p&gt;This is a simple example of unstyled text. Lore provides
+syntax for bold, italic, underlined and monospace. But what if
+we needed to annotate a text fragment that needed to be
+&lt;span class="invert"&gt;printed in inverse colors?&lt;/span&gt; How would
+that work?&lt;/p&gt;</pre>
+    <code><b>06_styled_text.html</b></code>
+
+    <p>The format of styled text is this:</p>
+
+    <pre>$$ style text $$</pre>
+
+    <p>The first space-delimeted symbol in the styled text defines the
+    class or classes to be applied to the text. If multiple styles are
+    to be applied to the styled text fragment, they are comma separated
+    (without spaces.) For example:</p>
+
+    <pre>$$ blue,translucent This is text that is supposed to be translucent and blue $$</pre>
+
+    <p>And would likely render in HTML as:</p>
+
+    <pre>&lt;span class="blue translucent"&gt;This is text that is supposed to be translucent and blue&lt;/span&gt;</pre>
+
+    <h3>Design Rationale</h3>
+
+    <p>Styled text originally used an annotation syntax like this:</p>
+
+    <pre>::style:blue:I am some blue text:</pre>
+
+    <p>But beta testers thought it looked too confusing. There was just
+    a little too much cruft around the text that was actually going to
+    be rendered. As an alternative, we picked the dollar sign as the
+    basis of the digraph because it looks like the 's' in 'styled'. And
+    the syntax is similar to that of <a href="#_3_Decorated_Links">Decorated Links</a>. We
+    believe the similarity makes it <i>easier</i> to
+    understand, not harder.</p>
+
+    <h3>Review</h3>
+
+    <ol>
+      <li>Styled text is enclosed by the double-dollar-sign <i>styled text digraph</i> (<code>$$</code>).</li>
+      <li>The first "word" in a styled text fragment is the name of the style to apply to the remainder of the text.</li>
+      <li>The Lore syntax does not describe how styled text is rendered; it only requires that the renderer take note of the style.</li>
+      <li>The <code>lore2html</code> utility uses the "style" in the styled text fragment to produce classes in a HTML &lt;SPAN&gt; element.</li>
+      <li>If you apply multiple styles, use commas to separate the names of the style, not spaces.</li>
+    </ol>
+
+    <h2>7. Tables</h2>
+
+    <p>Tables are blocks that start with a double-bar <i>table digraph</i>
+    (<code>||</code>). Their use is easy enough: place each element
+    you want in a cell between the double-bar digraph. Here's a simple
+    example:</p>
+
+    <pre>|| one || eleven ||
+|| two || twelve ||
+|| three || thirteen ||</pre>
+
+    <p>Like most other aspects of Lore, the syntax gives you few hints
+    as to how the content is styled when it's rendered. And like most
+    other aspects of Lore, instead of inventing new syntax for
+    options, we use annotations. Tables can take ::class and ::caption
+    annotations, like this:</p>
+
+    <pre>::caption:!!A Simple Table!!:
+::class:dark,thin:
+|| A || 65 ||
+|| B || 66 ||
+|| C || 67 ||</pre>
+
+    <p>A Table header can be added by introducing a ::header
+    annotation. Headers are row-specific annotations and can be
+    repeated on as many table rows as desired.</p>
+
+    <pre>::caption:!!A Simple Table!!:
+::class:dark,thin:
+::header:|| Character || ASCII Code ||
+|| A || 65 ||
+|| B || 66 ||
+|| C || 67 ||</pre>
+
+    <p>Here is what happens when you render this table:</p>
+
+    <table class="dark thin">
+      <caption><b>A Simple Table</b></caption>
+      <tr><th>Character</th><th>ASCII Code</th></tr>
+      <tr><td>A</td><td>65</td></tr>
+      <tr><td>B</td><td>66</td></tr>
+      <tr><td>C</td><td>67</td></tr>
+    </table>
+
+    <p>It should be noted though, the HTML version of this
+    guide was generated with CSS styling to make the table look
+    "nice". And the classes <code>dark</code> and <code>thin</code> were
+    defined to give the table a dark grey background and to take up no
+    more than 50% of the width of the page.</p>
+
+    <p>Here is a rendering of the table used as an example above
+    (<a href="#_4_04_lore_cheat_sheet_lore"/>04_lore_cheat_sheet.lore</a>):</p>
+
+    <table>
+      <tr><td>!!</td><td>Bold</td></tr>
+      <tr><td>//</td><td>Italic</td></tr>
+      <tr><td>__</td><td>Underline</td></tr>
+      <tr><td>**</td><td>Monospace</td></tr>
+      <tr><td>$$</td><td>Span</td></tr>
+      <tr><td>::</td><td>Annotation</td></tr>
+      <tr><td>##</td><td>Ordered Lists</td></tr>
+      <tr><td>++</td><td>Unordered Lists</td></tr>
+      <tr><td>||</td><td>Tables</td></tr>
+      <tr><td>;;</td><td>Leading Comment</td></tr>
+      <tr><td>⎵⎵</td><td>Leading Blank</td></tr>
+      <tr><td>\ </td><td>Backslash</td></tr>
+    </table>
+
+    <p>Cell-based annotations can be applied to table cells by
+    including annotations immediately after the double-bar digraph
+    (<code>||</code>). This can be used to apply classes to individual
+    cells or to set the <code>rowspan</code> or <code>colspan</code>
+    attributes for a particular cell. For example, this Lore fragment
+    uses class and colspan annotations to make the table look like an
+    invoice:</p>
+
+    <pre>::caption:Pretending to be an Invoice:
+  ::header: ::class:dark: || Count || Unit || Description || Ext ||
+  || ::class:right: 2 || ::class:right $7.99 || 8051 Programmer || ::class:right: $15.98 ||
+  || ::class:right: 1 || ::class:right $12.99 || Solder || ::class:right: $12.99 ||
+  || ::class:right: 1 || ::class:right $39.99 || Soldering Iron || ::class:right: $39.99 ||
+  || ::colspan:4: ||
+  || ::colspan:3: ::class:right: Subtotal || ::class:right: $68.96 ||
+  || ::colspan:3: ::class:right: Tax (8.25%) || ::class:right: $5.69 ||
+  || ::colspan:4: ||
+  || ::colspan:3: ::class:right: Total || ::class:right: $74.65 ||</pre>
+
+    <code><b>07_invoice.lore</b></code>
+
+    <p>And here's what it looks like when rendered:</p>
+
+    <table>
+      <caption>Pretending to be an Invoice</caption>
+      <tr class="dark"><th>Count</th><th>Unit</th><th>Description</th><th>Ext</th></tr>
+      <tr><td class="right">2</td><td class="right">$7.99</td><td>8051 Programmer</td><td class="right">$15.98</td></tr>
+      <tr><td class="right">1</td><td class="right">$12.99</td><td>Solder</td><td class="right">$12.99</td></tr>
+      <tr><td class="right">1</td><td class="right">$39.99</td><td>Soldering Iron</td><td class="right">$39.99</td></tr>
+      <tr><td colspan="4"></td></tr>
+      <tr><td class="right" colspan="3">Subtotal</td><td class="right">$68.96</td></tr>
+      <tr><td class="right" colspan="3">Tax (8.25%)</td><td class="right">$5.69</td></tr>
+      <tr><td colspan="4"></td></tr>
+      <tr><td class="right" colspan="3">Total</td><td class="right">$74.65</td></tr>
+
+    </table>
+
+    <h3>Design Rationale</h3>
+
+    <p>The authors of Lore believe that the table syntax is ugly. But
+    it is the least bad alternative. Much of Lore's semantics involve
+    combining annotations, and in the case of tables, it gets ugly
+    quickly.</p>
+
+    <h3>Review</h3>
+
+    <ol>
+      <li>Table cells are delimited by double-bar digraphs (<code>||</code>).</li>
+
+      <li>Each text row of cells delimeted by double-bar digraphs represents a table row.</li>
+
+      <li>Captions and class annotations for the table come before the table.</li>
+
+      <li>Class annotations for table rows come at the beginning of a row.</li>
+
+      <li>Class, Colspan and Rowspan annotations for cells come
+      immediately after the opening double-bar digraph.</li>
+
+      <li>Tables are problematic because there is tight coupling
+      between class annotations and the CSS or XSLT used to style the
+      rendered output as HTML or XML.</li>
+
+    </ol>
+
+    <h2>8. Lists</h2>
+
+    <p>There are two types of lists: ordered and unordered. Unordered
+    lists use bullets to introduce each new list item. Ordered lists
+    use an incrementing count to introduce each item.</p>
+
+    <p>Unordered lists are blocks whose every line begins with a
+    double-plus digraph (<code>++</code>). Ordered lists are blocks
+    whose every line begins with a double-octothorp digraph (<code>##</code>). Here's
+    an example:</p>
+
+    <pre>Remember to buy a few things at the store:
+
+++ Eggs
+++ Milk
+++ USB Flash Drive
+
+The most important things on the to-do list now are:
+
+## Go to the store.
+## Get the car washed.
+## Complete paperwork.</pre>
+
+    <code><b>08_A_List_Example.lore</b></code>
+
+    <p>And here's what this fragment looks like when rendered:</p>
+
+    <p>Remember to buy a few things at the store:</p>
+
+    <ul>
+      <li>Eggs</li>
+      <li>Milk</li>
+      <li>USB Flash Drive</li>
+    </ul>
+
+    <p>The most important things on the to-do list now are:</p>
+
+    <ol>
+      <li>Go to the store.</li>
+      <li>Get the car washed.</li>
+      <li>Complete paperwork.</li>
+    </ol>
+
+    <p>Syling information can be applied to a list by adding an annotation to the beginning:</p>
+
+    <pre>::list-style:georgian,inside:
+++ One
+++ Two
+++ Three</pre>
+
+    <code><b>08_Another_List_Example.lore</b></code>
+
+    <h2>9. Conclusion</h2>
+
+    <p>This document has presented the core features of the Lore
+    syntax. We hope it has been easy to digest. Related documents are
+    available:</p>
+
+    <ul>
+
+      <li><a href="https://mercerism.github.io/lore/01_example.html">https://mercerism.github.io/lore/01_example.html</a>
+      This page shows a simple example Lore file and the HTML it is rendered into with
+      <code>lore2html</code>.</li>
+      
+      <li><a href="https://mercerism.github.io/lore/02_lore2html.html">https://mercerism.github.io/lore/02_lore2html.html</a> This is a page that describes the use of the <code>lore2html</code> utility.</li>
+
+    </ul>
+
   </body>
 </html>
 

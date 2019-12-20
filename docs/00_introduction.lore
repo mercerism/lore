@@ -546,3 +546,239 @@ Review
    the media is to be rendered.
 ## Different rendering apps likely have other options for altering how media inclusions are rendered.
 ## Caption annotations should work with Images, Audio clips and Videos.
+
+::section
+Styling Arbitrary Text
+
+The designers of Lore attempted to separate content from it's presentation.
+That is, we hoped to avoid mandating specific styles for any particular text fragment.
+However, we felt it was necessary to allow authors using the Lore syntax to highlight arbitrary text with styling metadata.
+We don't define how "styled" text is rendered, but we do describe a mechanism for communicating that text should be styled to the renderer.
+
+Styled text uses the double-dollar digraph (**\$$**) to enclose a style description and a text fragment.
+In the example below, we see a paragraph that includes styled text:
+
+;;--- 64 Columns is THIS much ------------------------------------
+::caption:06_styled_text.lore
+  This is a simple example of unstyled text. Lore provides syntax
+  for bold, italic, underlined and monospace. But what if we
+  needed to annotate a text fragment that needed to be $$ invert
+  printed in inverse colors? $$ How would that work?
+
+This fragment would then be rendered as:
+
+;;--- 64 Columns is THIS much ------------------------------------
+::caption:06_styled_text.html
+  <p>This is a simple example of unstyled text. Lore provides
+  syntax for bold, italic, underlined and monospace. But what if
+  we needed to annotate a text fragment that needed to be
+  <span class="invert">printed in inverse colors?</span> How would
+  that work?</p>
+
+The format of styled text is this:
+
+  $$ style text $$
+
+The first space-delimeted symbol in the styled text defines the class or classes to be applied to the text.
+If multiple styles are to be applied to the styled text fragment, they are comma separated (without spaces.)
+For example:
+
+  $$ blue,translucent This is text that is supposed to be translucent and blue $$
+
+And would likely render in HTML as:
+
+  <span class="blue translucent">This is text that is supposed to be translucent and blue</span>
+
+::section
+::level:1
+Design Rationale
+
+Styled text originally used an annotation syntax like this:
+
+  ::style:blue:I am some blue text:
+
+But beta testers thought it looked too confusing.
+There was just a little too much cruft around the text that was actually going to be rendered.
+As an alternative, we picked the dollar sign as the basis of the digraph because it looks like the 's' in 'styled'.
+And the syntax is similar to that of ::link:#Decorated Links:.
+We believe the similarity makes it //easier// to understand, not harder.
+
+::section
+::level:1
+Review
+
+## Styled text is enclosed by the double-dollar-sign //styled text digraph// (**\$$**).
+## The first "word" in a styled text fragment is the name of the style to apply to the remainder of the
+   text.
+## The Lore syntax does not describe how styled text is rendered; it only requires that the renderer take
+   note of the style.
+## The **lore2html** utility uses the "style" in the styled text fragment to produce classes in a HTML
+   <SPAN> element.
+## If you apply multiple styles, use commas to separate the names of the style, not spaces.
+
+::section
+Tables
+
+Tables are blocks that start with a double-bar //table digraph// (**\||**).
+Their use is easy enough: place each element you want in a cell between the double-bar digraph.
+Here's a simple example:
+
+  || one || eleven ||
+  || two || twelve ||
+  || three || thirteen ||
+
+Like most other aspects of Lore, the syntax gives you few hints as to how the content is styled when it's rendered.
+And like most other aspects of Lore, instead of inventing new syntax for options, we use annotations.
+Tables can take \::class and \::caption annotations, like this:
+
+  ::caption:!!A Simple Table!!:
+  ::class:dark,thin:
+  || A || 65 ||
+  || B || 66 ||
+  || C || 67 ||
+
+A Table header can be added by introducing a \::header annotation.
+Headers are row-specific annotations and can be repeated on as many table rows as desired.
+
+  ::caption:!!A Simple Table!!:
+  ::class:dark,thin:
+  ::header:|| Character || ASCII Code ||
+  || A || 65 ||
+  || B || 66 ||
+  || C || 67 ||
+
+Here is what happens when you render this table:
+
+::caption:!!A Simple Table!!:
+::class:dark,thin:
+::header:|| Character || ASCII Code ||
+|| A || 65 ||
+|| B || 66 ||
+|| C || 67 ||
+
+It should be noted though, the HTML version of this guide was generated with CSS styling to make the table look "nice".
+And the classes **dark** and **thin** were defined to give the table a dark grey background and to take up no more than 50% of the width of the page.
+
+Here is a rendering of the table used as an example above (::link:#04_lore_cheat_sheet.lore:).
+
+|| \!! || Bold            ||
+|| \// || Italic          ||
+|| \__ || Underline       ||
+|| \** || Monospace       ||
+|| \$$ || Span            ||
+|| \:: || Annotation      ||
+|| \## || Ordered Lists   ||
+|| \++ || Unordered Lists ||
+|| \|| || Tables          ||
+|| \;; || Leading Comment ||
+|| \⎵⎵ || Leading Blank   ||
+|| \\  || Backslash       ||
+
+Cell-based annotations can be applied to table cells by including annotations immediately after the double-bar digraph (**\||**).
+This can be used to apply classes to individual cells or to set the **rowspan** or **colspan** attributes for a particular cell.
+For example, this Lore fragment uses class and colspan annotations to make the table look like an invoice:
+
+::caption:07_invoide.lore:
+  ::caption:Pretending to be an Invoice:
+  ::header: ::class:dark: || Count || Unit || Description || Ext ||
+  || ::class:right: 2 || ::class:right $7.99 || 8051 Programmer || ::class:right: $15.98 ||
+  || ::class:right: 1 || ::class:right $12.99 || Solder || ::class:right: $12.99 ||
+  || ::class:right: 1 || ::class:right $39.99 || Soldering Iron || ::class:right: $39.99 ||
+  || ::colspan:4: ||
+  || ::colspan:3: ::class:right: Subtotal || ::class:right: $68.96 ||
+  || ::colspan:3: ::class:right: Tax (8.25%) || ::class:right: $5.69 ||
+  || ::colspan:4: ||
+  || ::colspan:3: ::class:right: Total || ::class:right: $74.65 ||
+
+And here's what it looks like when rendered:
+
+::caption:Pretending to be an Invoice:
+::header: ::class:dark: || Count || Unit || Description || Ext ||
+|| ::class:right: 2 || ::class:right $7.99 || 8051 Programmer || ::class:right: $15.98 ||
+|| ::class:right: 1 || ::class:right $12.99 || Solder || ::class:right: $12.99 ||
+|| ::class:right: 1 || ::class:right $39.99 || Soldering Iron || ::class:right: $39.99 ||
+|| ::colspan:4: ||
+|| ::colspan:3: ::class:right: Subtotal || ::class:right: $68.96 ||
+|| ::colspan:3: ::class:right: Tax (8.25%) || ::class:right: $5.69 ||
+|| ::colspan:4: ||
+|| ::colspan:3: ::class:right: Total || ::class:right: $74.65 ||
+
+::section
+::level:1
+Design Rationale
+
+The authors of Lore believe that the table syntax is ugly.
+But it is the least bad alternative.
+Much of Lore's semantics involve combining annotations, and in the case of tables, it gets ugly quickly.
+
+::section
+::level:1
+Review
+
+## Table cells are delimited by double-bar digraphs (**\||**).
+## Each text row of cells delimeted by double-bar digraphs represents a table row.
+## Captions and class annotations for the table come before the table.
+## Class annotations for table rows come at the beginning of a row.
+## Class, Colspan and Rowspan annotations for cells come immediately after the opening double-bar digraph.
+## Tables are problematic because there is tight coupling between class annotations and the CSS or XSLT
+   used to style the rendered output as HTML or XML.
+
+::section
+Lists
+
+There are two types of lists: ordered and unordered.
+Unordered lists use bullets to introduce each new list item.
+Ordered lists use an incrementing count to introduce each item.
+
+Unordered lists are blocks whose every line begins with a double-plus digraph (**\++**).
+Ordered lists are blocks whose every line begins with a double-octothorp digraph (**\##**).
+Here's an example:
+
+;;--- 64 Columns is THIS much ------------------------------------
+::caption:08_A_List_Example.lore
+  Remember to buy a few things at the store:
+
+  ++ Eggs
+  ++ Milk
+  ++ USB Flash Drive
+
+  The most important things on the to-do list now are:
+
+  ## Go to the store.
+  ## Get the car washed.
+  ## Complete paperwork.
+
+And here's what this fragment looks like when rendered:
+
+Remember to buy a few things at the store:
+
+++ Eggs
+++ Milk
+++ USB Flash Drive
+
+The most important things on the to-do list now are:
+
+## Go to the store.
+## Get the car washed.
+## Complete paperwork.
+
+Syling information can be applied to a list by adding an annotation to the beginning:
+
+;;--- 64 Columns is THIS much ------------------------------------
+::caption:08_Another_List_Example.lore
+  ::list-style:georgian,inside:
+  ++ One
+  ++ Two
+  ++ Three
+
+::section
+Conclusion
+
+This document has presented the core features of the Lore syntax.
+We hope it has been easy to digest.
+Related documents are available:
+
+++ ::link:https://mercerism.github.io/lore/01_example.html: This page shows a simple example Lore file
+   and the HTML it is rendered into with **lore2html**.
+++ ::link:https://mercerism.github.io/lore/02_lore2html.html: This is a page that describes the use of the
+   **lore2html** utility.
