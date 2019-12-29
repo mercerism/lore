@@ -8,7 +8,10 @@ and code here; look in the ./docs/ (docs) directory for documents and the
 ./src/ (src) directory for lore toolchain code. Automated tests are in the
 ./test/ (test) directory.
 
-To use this Lore toolchain, you will need some version of node.js.
+To use this Lore toolchain, you will need some version of node.js. lore2html
+is the most commonly used Lore-related tool; see
+https://mercerism.github.io/lore/01_lore2html.html (the lore2html guide) for
+more information.
 
 To test the tools, cd into the test directory and type make. To build the
 documentation, cd into the docs directory and type make. Assuming the
